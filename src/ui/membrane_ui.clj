@@ -250,6 +250,9 @@
                                               :mover mh/accent-green)}}])))))
 
 
+(def work-text-style
+  #:text-style{:height 1
+               :height-override true})
 
 (defn room
   [r movers painters]
@@ -267,22 +270,22 @@
       (workers-present r movers painters))
 
     (ui/spacer 5)
-    (ui/horizontal-layout
-      (para/paragraph
-        {:text (str "🛋 work remaining: "
-                 (time-remaining-bar (-> r :moving1-time-remaining)))}))
+    (para/paragraph
+     {:text (str "🛋 work remaining: "
+                 (time-remaining-bar (-> r :moving1-time-remaining)))
+      :style work-text-style})
 
     ; adrian, is there an easy way to tighen up the line spacing between these?
-    (ui/horizontal-layout
-      (para/paragraph
-        {:text (str "🖌 work remaining: "
-                 (time-remaining-bar (-> r :painting-time-remaining)))}))
+    (para/paragraph
+     {:text (str "🖌 work remaining: "
+                 (time-remaining-bar (-> r :painting-time-remaining)))
+      :style work-text-style})
 
     ; adrian, is there an easy way to tighen up the line spacing between these?
-    (ui/horizontal-layout
-      (para/paragraph
-        {:text (str "🛋 work remaining: "
-                 (time-remaining-bar (-> r :moving2-time-remaining)))}))
+    (para/paragraph
+     {:text (str "🛋 work remaining: "
+                 (time-remaining-bar (-> r :moving2-time-remaining)))
+      :style work-text-style})
 
     (ui/spacer 10)
     (room-state r)
