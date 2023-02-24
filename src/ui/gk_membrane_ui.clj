@@ -2,6 +2,7 @@
   (:require
     [genek.entities :as e]
     [genek.sim2 :as sim]
+    [ui.menu :as menu]
     [membrane.basic-components :as basic]
     [membrane.component :refer [defui defeffect make-app]]
     [membrane.ui :as ui]
@@ -509,33 +510,51 @@
 (defui outer-pane
   [{:keys [view]}]
   (ui/vertical-layout
-    (ui/spacer 20 20)
-    (ui/horizontal-layout
-      (ui/horizontal-layout
-        (ui/spacer 20 20)
-        (basic/button {:text     "Load sim state"
-                       :on-click #(do
-                                    (log/warn :outer-pane :click)
-                                    (init-state! {:load-sim-state! true}))})
-        (basic/button {:text     "Initialize (Painters FIFO)"
-                       :on-click #(do
-                                    (log/warn :outer-pane :click)
-                                    (init-state! {:sim {:painter-schedule :fifo}}))})
-        (basic/button {:text     "Initialize (Painters LIFO)"
-                       :on-click #(do
-                                    (log/warn :outer-pane :click)
-                                    (init-state! {:sim {:painter-schedule :lifo}}))})
-        (basic/button {:text     "Initialize (Painters random)"
-                       :on-click #(do
-                                    (log/warn :outer-pane :click)
-                                    (init-state! {:sim {:painter-schedule :random}}))})))
-    (ui/spacer 20 20)
-
-    (ui/horizontal-layout
-      ;[(ui/spacer 100)
-      ; (ui/label "hello2")
+   (ui/spacer 20 20)
+   [
+    (ui/translate
+     0 (+ menu/menu-height 20)
+     (ui/horizontal-layout
+      ;; [(ui/spacer 100)
+      ;; (ui/label "hello2")
       (ui/spacer 20)
-      view)))
+      view))
+
+    ;; put menus last so they are drawn
+    ;; on top of everything else.
+    (ui/translate
+     20 0
+     (menu/menus
+      {:$menus [::top-menu]
+       :menus
+       [{:text "Init"
+         :items [{:text     "Load sim state"
+                  :on-click #(do
+                               (log/warn :outer-pane :click)
+                               (init-state! {:load-sim-state! true}))}
+                 {:text     "Initialize (Painters FIFO)"
+                  :on-click #(do
+                               (log/warn :outer-pane :click)
+                               (init-state! {:sim {:painter-schedule :fifo}}))}
+                 {:text     "Initialize (Painters LIFO)"
+                  :on-click #(do
+                               (log/warn :outer-pane :click)
+                               (init-state! {:sim {:painter-schedule :lifo}}))}
+                 {:text     "Initialize (Painters random)"
+                  :on-click #(do
+                               (log/warn :outer-pane :click)
+                               (init-state! {:sim {:painter-schedule :random}}))}]}
+        {:text "Second menu"
+         :items [{:text "View All"
+                  :on-click
+                  (fn []
+                    (prn "viewall")
+                    nil)}
+                 {:text "new"
+                  :on-click
+                  (fn []
+                    (prn "new")
+                    nil)}]}]}))]))
 
 (comment
   (def w3 (skia/run (make-app #'outer-pane {})))
